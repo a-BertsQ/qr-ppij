@@ -30,7 +30,7 @@ const formSchema = z.object({
 interface CreateUserDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onUserCreated: (user: any) => void
+  onUserCreated: (user: { id: string; name: string; email: string; role: "USER" | "ADMIN" | "SUPERADMIN" }) => void
 }
 
 export function CreateUserDialog({ open, onOpenChange, onUserCreated }: CreateUserDialogProps) {

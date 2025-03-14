@@ -1,8 +1,6 @@
 import React from "react"
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-export const Card: React.FC<CardProps> = ({ children, ...props }) => {
+export const Card: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, ...props }) => {
   return (
     <div className="card" {...props}>
       {children}
@@ -10,9 +8,7 @@ export const Card: React.FC<CardProps> = ({ children, ...props }) => {
   )
 }
 
-interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-export const CardHeader: React.FC<CardHeaderProps> = ({ children, ...props }) => {
+export const CardHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, ...props }) => {
   return (
     <div className="card-header" {...props}>
       {children}
@@ -20,9 +16,7 @@ export const CardHeader: React.FC<CardHeaderProps> = ({ children, ...props }) =>
   )
 }
 
-interface CardTitleProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-export const CardTitle: React.FC<CardTitleProps> = ({ children, ...props }) => {
+export const CardTitle: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, ...props }) => {
   return (
     <div className="card-title" {...props}>
       {children}
@@ -30,9 +24,7 @@ export const CardTitle: React.FC<CardTitleProps> = ({ children, ...props }) => {
   )
 }
 
-interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-export const CardContent: React.FC<CardContentProps> = ({ children, ...props }) => {
+export const CardContent: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, ...props }) => {
   return (
     <div className="card-content" {...props}>
       {children}
@@ -40,9 +32,7 @@ export const CardContent: React.FC<CardContentProps> = ({ children, ...props }) 
   )
 }
 
-interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-export const CardFooter: React.FC<CardFooterProps> = ({ children, ...props }) => {
+export const CardFooter: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, ...props }) => {
   return (
     <div className="card-footer" {...props}>
       {children}
