@@ -68,7 +68,7 @@ export async function getUserById(id: string) {
 // JWT functions
 const secretKey = new TextEncoder().encode(process.env.JWT_SECRET || "default-secret-key-change-in-production")
 
-export async function signJWT(payload: any) {
+export async function signJWT(payload: Record<string, unknown>) {
   return new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setIssuedAt().setExpirationTime("1d").sign(secretKey)
 }
 
@@ -88,13 +88,13 @@ export type SessionUser = {
 
 export async function getSession() {
   const cookieStore = cookies()
-  const token = cookieStore.get("auth-token")?.value
+  const token = (await cookieStore).get("auth-token")?.value
 
   if (!token) return null
 
   try {
     return await verifyJWT<SessionUser>(token)
-  } catch (error) {
+  } catch {
     return null
   }
 }
@@ -131,7 +131,7 @@ export function isUserAuthorized(user: SessionUser | null, allowedRoles: string[
 // Middleware helper
 export async function withAuth(request: NextRequest, allowedRoles: string[] = ["USER", "ADMIN", "SUPERADMIN"]) {
   const cookieStore = cookies()
-  const token = cookieStore.get("auth-token")?.value
+  const token = (await cookieStore).get("auth-token")?.value
 
   if (!token) {
     return NextResponse.redirect(new URL("/auth/login", request.url))
@@ -145,7 +145,7 @@ export async function withAuth(request: NextRequest, allowedRoles: string[] = ["
     }
 
     return null // Continue to the protected route
-  } catch (error) {
+  } catch {
     return NextResponse.redirect(new URL("/auth/login", request.url))
   }
 }

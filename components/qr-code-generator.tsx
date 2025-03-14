@@ -1,13 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { Download, Loader2, RefreshCw } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card" // Ensure this path is correct
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -379,14 +380,13 @@ export function QRCodeGenerator() {
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col items-center">
-            <div className="mb-4 p-4 bg-white rounded-lg">
-              <img src={qrCode || "/placeholder.svg"} alt="Generated QR Code" className="mx-auto" />
-            </div>
-            {lastScanned && (
-              <p className="text-sm text-muted-foreground mb-4">
-                Last scanned: {new Date(lastScanned).toLocaleString()}
-              </p>
-            )}
+            <Image
+              src={qrCode || "/placeholder.svg"}
+              alt="Generated QR Code"
+              className="mx-auto"
+              width={200}
+              height={200}
+            />
           </CardContent>
           <CardFooter className="flex justify-center">
             <Button onClick={downloadQRCode} variant="outline" className="gap-2">
@@ -396,7 +396,11 @@ export function QRCodeGenerator() {
           </CardFooter>
         </Card>
       )}
+      {lastScanned && (
+        <p className="text-sm text-muted-foreground mb-4">
+          Last scanned: {new Date(lastScanned).toLocaleString()}
+        </p>
+      )}
     </div>
   )
 }
-
