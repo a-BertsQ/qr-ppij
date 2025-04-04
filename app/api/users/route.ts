@@ -27,6 +27,6 @@ export async function GET() {
     },
   })
 
-  return NextResponse.json({ users }, { status: 200 })
+  // Return the array of users directly
+  return NextResponse.json(users, { status: 200 })
 }
-

@@ -8,7 +8,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card" // Ensure this path is correct
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -31,7 +31,6 @@ export function QRCodeGenerator() {
   const [lastScanned, setLastScanned] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [activeTab, setActiveTab] = useState("url")
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -46,22 +45,12 @@ export function QRCodeGenerator() {
     setIsGenerating(true)
     try {
       let content = data.content
-      let type: "url" | "text" | "contact" = "text"
 
-      // Format content based on tab
-      if (activeTab === "contact") {
-        content = `MECARD:N:${content};`
-        type = "contact"
-      } else if (activeTab === "text") {
-        content = content
-        type = "text"
-      } else {
-        // URL tab - add https:// if not present
-        if (!/^https?:\/\//i.test(content)) {
-          content = `https://${content}`
-        }
-        type = "url"
+      // URL tab - add https:// if not present
+      if (!/^https?:\/\//i.test(content)) {
+        content = `https://${content}`
       }
+      const type = "url"
 
       const result = await generateQRCode({
         content,
@@ -119,11 +108,9 @@ export function QRCodeGenerator() {
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="url" onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
+      <Tabs defaultValue="url">
+        <TabsList className="grid w-full grid-cols-1">
           <TabsTrigger value="url">URL</TabsTrigger>
-          <TabsTrigger value="text">Text</TabsTrigger>
-          <TabsTrigger value="contact">Contact</TabsTrigger>
         </TabsList>
         <TabsContent value="url">
           <Form {...form}>
@@ -138,162 +125,6 @@ export function QRCodeGenerator() {
                       <Input placeholder="example.com" {...field} />
                     </FormControl>
                     <FormDescription>Enter the website URL you want to create a QR code for</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="size"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Size</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select size" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="200">Small</SelectItem>
-                          <SelectItem value="300">Medium</SelectItem>
-                          <SelectItem value="400">Large</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="color"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Color</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select color" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="000000">Black</SelectItem>
-                          <SelectItem value="0000FF">Blue</SelectItem>
-                          <SelectItem value="FF0000">Red</SelectItem>
-                          <SelectItem value="008000">Green</SelectItem>
-                          <SelectItem value="800080">Purple</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={isGenerating}>
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  "Generate QR Code"
-                )}
-              </Button>
-            </form>
-          </Form>
-        </TabsContent>
-        <TabsContent value="text">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Text Content</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your text here" {...field} />
-                    </FormControl>
-                    <FormDescription>Enter the text you want to encode in the QR code</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="size"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Size</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select size" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="200">Small</SelectItem>
-                          <SelectItem value="300">Medium</SelectItem>
-                          <SelectItem value="400">Large</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="color"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Color</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select color" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="000000">Black</SelectItem>
-                          <SelectItem value="0000FF">Blue</SelectItem>
-                          <SelectItem value="FF0000">Red</SelectItem>
-                          <SelectItem value="008000">Green</SelectItem>
-                          <SelectItem value="800080">Purple</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={isGenerating}>
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generating...
-                  </>
-                ) : (
-                  "Generate QR Code"
-                )}
-              </Button>
-            </form>
-          </Form>
-        </TabsContent>
-        <TabsContent value="contact">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Contact Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="John Doe" {...field} />
-                    </FormControl>
-                    <FormDescription>Enter the contact name for the QR code</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

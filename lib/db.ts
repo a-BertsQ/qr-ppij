@@ -29,13 +29,13 @@ export async function getAllQRCodes(): Promise<QRCodeData[]> {
       },
     })
 
-    return qrCodes.map((qrCode: QRCodeData) => ({
+    return qrCodes.map((qrCode) => ({
       id: qrCode.id,
       content: qrCode.content,
       type: qrCode.type as "url" | "text" | "contact",
-      createdAt: qrCode.createdAt.toString(),
+      createdAt: qrCode.createdAt.toISOString(),
       scanCount: qrCode.scanCount,
-      lastScanned: qrCode.lastScanned ? qrCode.lastScanned.toString() : null,
+      lastScanned: qrCode.lastScanned ? qrCode.lastScanned.toISOString() : null,
       size: qrCode.size,
       color: qrCode.color,
     }))

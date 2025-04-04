@@ -1,6 +1,6 @@
 "use server"
 
-import * as QRCode from "qrcode"
+import { toDataURL } from "qrcode"
 import { saveQRCode, getAllQRCodes, getQRCodeById } from "@/lib/db"
 
 interface QRCodeParams {
@@ -42,7 +42,7 @@ export async function generateQRCode({
     }
 
     // Generate QR code as data URL (pointing to our redirect endpoint)
-    const dataUrl: string = await QRCode.toDataURL(redirectUrl, options)
+    const dataUrl: string = await toDataURL(redirectUrl, options as any)
 
     return {
       dataUrl,

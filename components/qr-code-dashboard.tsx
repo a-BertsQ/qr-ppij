@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { RefreshCw, ExternalLink, Download } from "lucide-react"
+import { RefreshCw, ExternalLink, Download, Trash } from "lucide-react"
 import { format } from "date-fns"
 
 import { Button } from "@/components/ui/button"
@@ -38,6 +38,25 @@ export function QRCodeDashboard({ initialQRCodes }: QRCodeDashboardProps) {
       console.error("Error refreshing QR codes:", error)
     } finally {
       setIsRefreshing(false)
+    }
+  }
+
+  async function deleteQRCode(id: string) {
+    if (!confirm("Are you sure you want to delete this QR code?")) return
+
+    try {
+      const response = await fetch(`/api/qrcodes/${id}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to delete QR code")
+      }
+
+      // Remove the deleted QR code from the state
+      setQRCodes((prevQRCodes) => prevQRCodes.filter((qrCode) => qrCode.id !== id))
+    } catch (error) {
+      console.error("Error deleting QR code:", error)
     }
   }
 
@@ -100,10 +119,14 @@ export function QRCodeDashboard({ initialQRCodes }: QRCodeDashboardProps) {
                 <TableRow key={qrCode.id}>
                   <TableCell>{getTypeLabel(qrCode.type)}</TableCell>
                   <TableCell className="font-medium">{truncateContent(qrCode.content)}</TableCell>
-                  <TableCell>{format(new Date(qrCode.createdAt), "MMM d, yyyy")}</TableCell>
+                  <TableCell>
+                    {format(new Date(qrCode.createdAt), "MMM d, yyyy HH:mm:ss")}
+                  </TableCell>
                   <TableCell className="text-center">{qrCode.scanCount}</TableCell>
                   <TableCell>
-                    {qrCode.lastScanned ? format(new Date(qrCode.lastScanned), "MMM d, yyyy HH:mm") : "Never"}
+                    {qrCode.lastScanned
+                      ? format(new Date(qrCode.lastScanned), "MMM d, yyyy HH:mm:ss")
+                      : "Never"}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
@@ -117,6 +140,15 @@ export function QRCodeDashboard({ initialQRCodes }: QRCodeDashboardProps) {
                           <span className="sr-only">Open</span>
                         </a>
                       </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => deleteQRCode(qrCode.id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <Trash className="h-4 w-4" />
+                        <span className="sr-only">Delete</span>
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -128,4 +160,3 @@ export function QRCodeDashboard({ initialQRCodes }: QRCodeDashboardProps) {
     </Card>
   )
 }
-
